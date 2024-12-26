@@ -5,16 +5,19 @@ from pydantic import BaseModel, Field
 
 
 class APISettings(BaseModel):
-    host: str = Field(alias="UVICORN_HOST")
-    port: int = Field(alias="UVICORN_PORT")
+    host: str = Field(default="0.0.0.0", alias="UVICORN_HOST")
+    port: int = Field(default=8000, alias="UVICORN_PORT")
 
 
 class DatabaseSettings(BaseModel):
-    host: str = Field(alias="POSTGRES_HOST")
-    port: int = Field(alias="POSTGRES_PORT")
-    user: str = Field(alias="POSTGRES_USER")
-    password: str = Field(alias="POSTGRES_PASSWORD")
-    db_name: str = Field(alias="POSTGRES_DB")
+    host: str = Field(default="localhost", alias="POSTGRES_HOST")
+    port: int = Field(default=5432, alias="POSTGRES_PORT")
+    user: str = Field(default="user", alias="POSTGRES_USER")
+    password: str = Field(default="my_password", alias="POSTGRES_PASSWORD")
+    db_name: str = Field(default="my_database", alias="POSTGRES_DB")
+    pool_size: int = Field(default=10, alias="DB_POOL_SIZE")
+    max_overflow: int = Field(default=10, alias="DB_MAX_OVERFLOW")
+    timeout: int = Field(default=5, alias="DB_TIMEOUT")
 
     @property
     def db_uri(self) -> str:
@@ -22,9 +25,9 @@ class DatabaseSettings(BaseModel):
 
 
 class LoggingSettings(BaseModel):
-    log_level: str = Field(alias="LOG_LEVEL", default="DEBUG")
-    log_file: str = Field(alias="LOG_FILE", default="app.log")
-    log_encoding: str = Field(alias="LOG_ENCODING", default="utf-8")
+    log_level: str = Field(default="DEBUG", alias="LOG_LEVEL")
+    log_file: str = Field(default="app.log", alias="LOG_FILE")
+    log_encoding: str = Field(default="utf-8", alias="LOG_ENCODING",)
 
 
 class Settings(BaseModel):

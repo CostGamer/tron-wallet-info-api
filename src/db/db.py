@@ -12,9 +12,9 @@ def get_session(
     async_engine = create_async_engine(
         db_settings.db_uri,
         echo=False,
-        pool_size=15,
-        max_overflow=15,
-        connect_args={"timeout": 5},
+        pool_size=db_settings.pool_size,
+        max_overflow=db_settings.max_overflow,
+        connect_args={"timeout": db_settings.timeout},
     )
     async_session_factory = async_sessionmaker(
         bind=async_engine,
