@@ -1,8 +1,8 @@
 """0001
 
-Revision ID: 40f5fabd8137
+Revision ID: 97d2be571d5f
 Revises:
-Create Date: 2024-12-26 21:40:34.276304
+Create Date: 2024-12-27 00:21:08.846109
 
 """
 
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "40f5fabd8137"
+revision: str = "97d2be571d5f"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,13 +27,11 @@ def upgrade() -> None:
         ),
         sa.Column("wallet_address", sa.String(length=34), nullable=False),
         sa.Column("request_time", sa.DateTime(), nullable=False),
-        sa.Column("response_time", sa.DateTime(), nullable=True),
         sa.Column(
             "status",
             sa.Enum(
                 "success",
                 "failure",
-                "processing",
                 name="wallet_request_status",
                 create_constraint=True,
             ),

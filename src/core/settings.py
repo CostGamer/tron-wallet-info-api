@@ -3,6 +3,9 @@ from pathlib import Path
 
 from pydantic import BaseModel, Field
 
+SUCCESS = "success"
+FAILURE = "failure"
+
 
 class APISettings(BaseModel):
     host: str = Field(default="0.0.0.0", alias="UVICORN_HOST")
