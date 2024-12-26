@@ -27,7 +27,10 @@ class DatabaseSettings(BaseModel):
 class LoggingSettings(BaseModel):
     log_level: str = Field(default="DEBUG", alias="LOG_LEVEL")
     log_file: str = Field(default="app.log", alias="LOG_FILE")
-    log_encoding: str = Field(default="utf-8", alias="LOG_ENCODING",)
+    log_encoding: str = Field(
+        default="utf-8",
+        alias="LOG_ENCODING",
+    )
 
 
 class Settings(BaseModel):
