@@ -10,15 +10,15 @@ WalletRequestStatus = Literal["success", "failure", "processing"]
 
 
 class Base(DeclarativeBase):
-    id: Mapped[uuid.UUID] = mapped_column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
-    )
+    pass
 
 
 class Wallet(Base):
     __tablename__ = "wallets"
 
-    address: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
+    address: Mapped[str] = mapped_column(
+        String(34), unique=True, nullable=False, primary_key=True
+    )
     bandwidth: Mapped[int] = mapped_column(Integer, nullable=False)
     energy: Mapped[int] = mapped_column(Integer, nullable=False)
     balance: Mapped[float] = mapped_column(Float, nullable=False)
@@ -35,7 +35,10 @@ class Wallet(Base):
 class WalletRequest(Base):
     __tablename__ = "wallet_requests"
 
-    wallet_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("wallets.id"))
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    wallet_address: Mapped[str] = mapped_column(ForeignKey("wallets.address"))
     request_time: Mapped[datetime] = mapped_column(default=func.now())
     response_time: Mapped[datetime] = mapped_column(nullable=True)
     status: Mapped[WalletRequestStatus] = mapped_column(
