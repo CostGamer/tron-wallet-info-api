@@ -3,6 +3,10 @@ from logging import getLogger
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.core import all_settings
+from src.core.logs import init_logger
+from src.middleware.logger import LoggerMiddleware
+
 logger = getLogger(__name__)
 
 
@@ -22,6 +26,7 @@ def init_middlewares(app: FastAPI) -> None:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+    app.add_middleware(LoggerMiddleware)
 
 
 def setup_app() -> FastAPI:
@@ -32,6 +37,7 @@ def setup_app() -> FastAPI:
         This API accepts a wallet address as input and returns the corresponding data from the Tron network",
         version="0.1.0",
     )
+    init_logger(all_settings.logging)
     init_routers(app)
     init_middlewares(app)
     logger.info("App created", extra={"app_version": app.version})
