@@ -21,7 +21,7 @@ class DatabaseSettings(BaseModel):
 
     @property
     def db_uri(self) -> str:
-        return f"postgresql://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"
+        return f"postgresql+psycopg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db_name}"
 
 
 class LoggingSettings(BaseModel):

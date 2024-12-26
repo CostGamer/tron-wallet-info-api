@@ -1,15 +1,12 @@
 import uuid
 from datetime import datetime
+from typing import Literal, get_args
 
 from sqlalchemy import Enum, Float, ForeignKey, Integer, String, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-
-class RequestStatus(str, Enum):
-    success = "success"
-    failure = "failure"
-    processing = "processing"
+WalletRequestStatus = Literal["success", "failure", "processing"]
 
 
 class Base(DeclarativeBase):
@@ -41,6 +38,14 @@ class WalletRequest(Base):
     wallet_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("wallets.id"))
     request_time: Mapped[datetime] = mapped_column(default=func.now())
     response_time: Mapped[datetime] = mapped_column(nullable=True)
-    status: Mapped[RequestStatus] = mapped_column(Enum(RequestStatus), nullable=False)
+    status: Mapped[WalletRequestStatus] = mapped_column(
+        Enum(
+            *get_args(WalletRequestStatus),
+            name="wallet_request_status",
+            create_constraint=True,
+            validate_strings=True,
+        ),
+        nullable=False,
+    )
 
     wallet: Mapped["Wallet"] = relationship("Wallet", back_populates="requests")
