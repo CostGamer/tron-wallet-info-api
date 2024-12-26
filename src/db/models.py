@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
     pass
 
 
-class Wallet(Base):
+class Wallets(Base):
     __tablename__ = "wallets"
 
     address: Mapped[str] = mapped_column(
@@ -24,7 +24,7 @@ class Wallet(Base):
     balance: Mapped[float] = mapped_column(Float, nullable=False)
     created_at: Mapped[datetime] = mapped_column(default=func.now())
 
-    requests: Mapped[list["WalletRequest"]] = relationship(
+    requests: Mapped[list["WalletsRequest"]] = relationship(
         "WalletRequest",
         back_populates="wallet",
         uselist=True,
@@ -32,8 +32,8 @@ class Wallet(Base):
     )
 
 
-class WalletRequest(Base):
-    __tablename__ = "wallet_requests"
+class WalletsRequest(Base):
+    __tablename__ = "wallets_requests"
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
@@ -51,4 +51,4 @@ class WalletRequest(Base):
         nullable=False,
     )
 
-    wallet: Mapped["Wallet"] = relationship("Wallet", back_populates="requests")
+    wallet: Mapped["Wallets"] = relationship("Wallet", back_populates="requests")
