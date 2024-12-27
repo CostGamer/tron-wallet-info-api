@@ -6,7 +6,7 @@ from sqlalchemy import Enum, String, func, text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
-WalletRequestStatus = Literal["success", "failure", "processing"]
+WalletRequestStatus = Literal["success", "failure"]
 
 
 class Base(DeclarativeBase):
@@ -21,7 +21,6 @@ class WalletsRequest(Base):
     )
     wallet_address: Mapped[str] = mapped_column(String(34), nullable=False)
     request_time: Mapped[datetime] = mapped_column(default=func.now())
-    response_time: Mapped[datetime] = mapped_column(nullable=True)
     status: Mapped[WalletRequestStatus] = mapped_column(
         Enum(
             *get_args(WalletRequestStatus),

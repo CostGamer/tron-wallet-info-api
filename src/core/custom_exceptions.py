@@ -1,0 +1,2 @@
+class WalletFormatIsIncorrect(Exception):
+    pass

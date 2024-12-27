@@ -3,11 +3,12 @@ from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from src.core.settings import FAILURE, SUCCESS
+
 
 class WalletRequestStatus(str, Enum):
-    success = "success"
-    failure = "failure"
-    processing = "processing"
+    success = SUCCESS
+    failure = FAILURE
 
 
 class PostWallet(BaseModel):
