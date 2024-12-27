@@ -1,14 +1,14 @@
 from src.core.custom_exceptions import WalletFormatIsIncorrect
-from src.core.pydantic_schemas import GetWallet, PostWallet
+from src.core.pydantic_schemas import GetWallet, GetWalletRequest, PostWallet
 from src.core.settings import FAILURE, SUCCESS
-from src.repositories.wallet_repo import WalletRepo
+from src.repositories.wallet_repo import GetWalletsRequestsRepo, PostWalletRepo
 from src.services.tron_service import TronService
 
 
-class WaletService:
+class PostWaletService:
     def __init__(
         self,
-        wallet_repo: WalletRepo,
+        wallet_repo: PostWalletRepo,
         tron_service: TronService,
     ) -> None:
         self._wallet_repo = wallet_repo
@@ -33,3 +33,24 @@ class WaletService:
 
         await self._wallet_repo.post_wallet_request_data(wallet=wallet, status=SUCCESS)
         return GetWallet.model_validate(get_wallet_info)
+
+
+class GetWalletsRequestsService:
+    def __init__(self, get_wallet_repo: GetWalletsRequestsRepo) -> None:
+        self._get_wallet_repo = get_wallet_repo
+
+    async def __call__(self, page: int, size: int) -> list[GetWalletRequest]:
+        wallets_requests = await self._get_wallet_repo.get_latest_wallets(page, size)
+
+        formatted_requests = []
+        for wallet in wallets_requests:
+            formatted_request = {
+                "wallet_address": wallet[0],
+                "request_time": wallet[1].strftime("%Y-%m-%d %H:%M:%S"),
+                "status": wallet[2],
+            }
+            formatted_requests.append(
+                GetWalletRequest.model_validate(formatted_request)
+            )
+
+        return formatted_requests

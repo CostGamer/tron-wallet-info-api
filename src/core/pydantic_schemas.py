@@ -1,4 +1,3 @@
-from datetime import datetime
 from enum import Enum
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -36,11 +35,8 @@ class GetWalletRequest(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     wallet_address: str = Field(..., description="wallet adress in Tron network")
-    request_time: datetime = Field(
+    request_time: str = Field(
         ..., description="The timestamp when the request was made"
-    )
-    response_time: datetime = Field(
-        ..., description="The timestamp when the response was received"
     )
     status: WalletRequestStatus = Field(
         ..., description="The status of the request (success, failure, processing)"
