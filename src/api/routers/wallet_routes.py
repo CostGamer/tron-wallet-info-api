@@ -24,7 +24,6 @@ async def post_wallet(
 @wallet_router.get(
     "/get_wallets_requests_list",
     response_model=list[GetWalletRequest],
-    # responses=...,
     description="This endpoint allows you to get a list of \
     requests for wallets with pagination support. \
     You can specify the page number and the number of elements \
