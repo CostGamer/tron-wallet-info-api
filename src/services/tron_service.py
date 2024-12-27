@@ -1,20 +1,30 @@
 import re
 
-from tronpy import Tron
+from tronpy import AsyncTron
+from tronpy.providers import AsyncHTTPProvider
+
+from src.core.settings import TronSettings
 
 
 class TronService:
-    def __init__(self, node_url: str = "https://api.trongrid.io"):
-        self._client = Tron(full_node=node_url)
+    def __init__(self, tron_configs: TronSettings) -> None:
+        self._client = AsyncTron(
+            provider=AsyncHTTPProvider(
+                endpoint_uri=tron_configs.tron_provider,
+                api_key=tron_configs.tron_api_key,
+            )
+        )
 
     async def get_wallet_info(self, address: str) -> dict:
-        account = self._client.get_account(address)
+        balance = await self._client.get_account_balance(address)
+        bandwidth = await self._client.get_bandwidth(address)
+        energy = await self._client.get_account(address)
         return {
-            "balance": account.get("balance", 0) / 1_000_000,  # TRX
-            "bandwidth": account.get("free_net_usage", 0),
-            "energy": account.get("energy_usage", 0),
+            "balance": balance,
+            "bandwidth": bandwidth,
+            "energy": energy.get("energy_usage", 0),
         }
 
     @staticmethod
     def check_wallet_format(address: str) -> bool:
-        return bool(re.match(r"^T[a-zA-Z0-9]{33}$", address))
+        return bool(re.match(r"^T[a-zA-Z0-9]{33}$", address)) and len(address) == 34

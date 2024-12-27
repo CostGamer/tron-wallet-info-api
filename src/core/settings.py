@@ -20,7 +20,6 @@ class DatabaseSettings(BaseModel):
     db_name: str = Field(default="my_database", alias="POSTGRES_DB")
     pool_size: int = Field(default=10, alias="DB_POOL_SIZE")
     max_overflow: int = Field(default=10, alias="DB_MAX_OVERFLOW")
-    timeout: int = Field(default=5, alias="DB_TIMEOUT")
 
     @property
     def db_uri(self) -> str:
@@ -36,10 +35,20 @@ class LoggingSettings(BaseModel):
     )
 
 
+class TronSettings(BaseModel):
+    tron_provider: str = Field(
+        default="https://api.getblock.io/tron/mainnet", alias="TRON_PROVIDER"
+    )
+    tron_api_key: str = Field(
+        default="12sfe44efsf3493329da2225746dcfej", alias="TRON_API_KEY"
+    )
+
+
 class Settings(BaseModel):
     api: APISettings = Field(default_factory=lambda: APISettings(**env))
     database: DatabaseSettings = Field(default_factory=lambda: DatabaseSettings(**env))
     logging: LoggingSettings = Field(default_factory=lambda: LoggingSettings(**env))
+    tron: TronSettings = Field(default_factory=lambda: TronSettings(**env))
 
 
 def load_dotenv(path: str | Path) -> None:

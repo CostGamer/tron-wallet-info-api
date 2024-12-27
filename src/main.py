@@ -2,15 +2,27 @@ from logging import getLogger
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from httpx import HTTPStatusError
+from tronpy.exceptions import BadAddress
 
+from src.api.exceptions import bad_address, incorrect_wallet_format, unathorized
+from src.api.routers.wallet_routes import wallet_router
 from src.core import all_settings
+from src.core.custom_exceptions import WalletFormatIsIncorrect
 from src.core.logs import init_logger
 from src.middleware.logger import LoggerMiddleware
 
 logger = getLogger(__name__)
 
 
-def init_routers(app: FastAPI) -> None: ...
+def register_exception_handlers(app: FastAPI) -> None:
+    app.add_exception_handler(WalletFormatIsIncorrect, incorrect_wallet_format)  # type: ignore
+    app.add_exception_handler(BadAddress, bad_address)
+    app.add_exception_handler(HTTPStatusError, unathorized)  # type: ignore
+
+
+def init_routers(app: FastAPI) -> None:
+    app.include_router(wallet_router, prefix="/wallet", tags=["wallet"])
 
 
 def init_middlewares(app: FastAPI) -> None:
@@ -40,5 +52,6 @@ def setup_app() -> FastAPI:
     init_logger(all_settings.logging)
     init_routers(app)
     init_middlewares(app)
+    register_exception_handlers(app)
     logger.info("App created", extra={"app_version": app.version})
     return app
